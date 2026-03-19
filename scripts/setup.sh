@@ -68,7 +68,7 @@ Type=simple
 ExecStart=$BINARY \\
     -u nobody \\
     -p 8888 \\
-    -H 443 \\
+    -H 8443 \\
     -S $SECRET \\
     --aes-pwd $DATA_DIR/proxy-secret $DATA_DIR/proxy-multi.conf \\
     -M 1
@@ -97,5 +97,5 @@ echo ""
 echo "Stats:  wget -qO- localhost:8888/stats"
 echo ""
 echo "Connection link:"
-echo "tg://proxy?server=${SERVER_IP}&port=443&secret=${SECRET}"
+echo "tg://proxy?server=${SERVER_IP}&port=8443&secret=${SECRET}"
 echo "====================================="
