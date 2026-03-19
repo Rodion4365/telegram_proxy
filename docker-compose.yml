@@ -1,0 +1,20 @@
+services:
+  mtproto-proxy:
+    build: .
+    image: mtproto-proxy:local
+    container_name: mtproto-proxy
+    restart: always
+    ports:
+      - "8443:443"
+    volumes:
+      - ./config/proxy-secret:/data/proxy-secret:ro
+      - ./config/proxy-multi.conf:/data/proxy-multi.conf:ro
+    env_file:
+      - .env
+    command: >
+      -u nobody
+      -p 8888
+      -H 443
+      -S ${SECRET}
+      --aes-pwd /data/proxy-secret /data/proxy-multi.conf
+      -M 1
