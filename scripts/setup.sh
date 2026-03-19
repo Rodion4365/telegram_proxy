@@ -1,6 +1,8 @@
 #!/bin/bash
 # Initial setup script for MTProxy.
-# Run once on the server: bash scripts/setup.sh
+# Run on the server:
+#   git clone https://github.com/TelegramMessenger/MTProxy /opt/mtproxy
+#   cd /opt/mtproxy && bash scripts/setup.sh
 
 set -e
 
@@ -18,14 +20,14 @@ SECRET=$(head -c 16 /dev/urandom | xxd -ps)
 echo "SECRET=$SECRET" > "$ENV_FILE"
 echo "       Secret: $SECRET"
 
-echo "[3/5] Building Docker image..."
+echo "[3/5] Building Docker image (clones from GitHub, may take a few minutes)..."
 cd "$DIR"
 docker compose build
 
 echo "[4/5] Starting proxy..."
 docker compose up -d
 
-echo "[5/5] Setting up daily cron update (04:00)..."
+echo "[5/5] Setting up daily cron update at 04:00..."
 CRON_JOB="0 4 * * * $DIR/scripts/update-config.sh >> /var/log/mtproxy-update.log 2>&1"
 (crontab -l 2>/dev/null | grep -v "update-config.sh"; echo "$CRON_JOB") | crontab -
 
