@@ -21,6 +21,10 @@ apt-get install -y git curl build-essential libssl-dev zlib1g-dev xxd
 echo "[2/6] Getting source from https://github.com/TelegramMessenger/MTProxy ..."
 if [ -d "$INSTALL_DIR/.git" ]; then
     git -C "$INSTALL_DIR" pull origin master
+elif [ -d "$INSTALL_DIR" ]; then
+    echo "       $INSTALL_DIR exists but is not a git repo — removing and cloning fresh..."
+    rm -rf "$INSTALL_DIR"
+    git clone https://github.com/TelegramMessenger/MTProxy "$INSTALL_DIR"
 else
     git clone https://github.com/TelegramMessenger/MTProxy "$INSTALL_DIR"
 fi
