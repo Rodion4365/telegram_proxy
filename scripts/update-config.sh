@@ -1,19 +1,19 @@
 #!/bin/bash
-# Daily update of Telegram proxy configuration files.
-# Run via cron: 0 4 * * * /home/user/telegram_proxy/scripts/update-config.sh
+# Daily update of Telegram proxy config files.
+# Source: https://github.com/TelegramMessenger/MTProxy (README: update configs regularly)
+#
+# Added to cron by setup.sh:
+#   0 4 * * * /opt/mtproxy/scripts/update-config.sh >> /var/log/mtproxy-update.log 2>&1
 
 set -e
 
-DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG_DIR="$DIR/config"
+DATA_DIR="/etc/mtproxy"
 
-echo "[$(date)] Updating Telegram proxy config..."
+echo "[$(date)] Updating proxy-secret and proxy-multi.conf..."
+curl -s https://core.telegram.org/getProxySecret  -o "$DATA_DIR/proxy-secret"
+curl -s https://core.telegram.org/getProxyConfig  -o "$DATA_DIR/proxy-multi.conf"
 
-curl -s https://core.telegram.org/getProxySecret -o "$CONFIG_DIR/proxy-secret"
-curl -s https://core.telegram.org/getProxyConfig -o "$CONFIG_DIR/proxy-multi.conf"
-
-echo "[$(date)] Restarting proxy container..."
-cd "$DIR"
-docker compose restart mtproto-proxy
+echo "[$(date)] Restarting MTProxy service..."
+systemctl restart MTProxy
 
 echo "[$(date)] Done."
